@@ -3,7 +3,7 @@
 ## 스터디원 
 - [김보인](https://github.com/Boin-Kau)
 - [최준혁](https://github.com/junhyeok0112)
-- [고은비]()  
+- [고은비](https://github.com/kolucy)  
 
 ## 스터디 규칙
 
