@@ -10,12 +10,11 @@
 <summary>프로세스 생성 과정에 대해서 설명해보세요</summary>
 <div markdown="1">
   
-일반적인 프로세스 생성 과정
-
-PCB가 생성되며 OS가 실행한 프로그램의 코드를 읽어들여 프로세스에 할당된 메모리의 Text segment에 저장한다.
-초기화된 전역 변수 및 static 변수를 data segment에 할당.
-HEAP과 Stack은 초기 메모리 주소만 초기화됨.
-PCB에 여러 정보가 기록되면 Ready Queue에서 CPU를 할당받기까지 대기한다.
+- 일반적인 프로세스 생성 과정
+  - PCB가 생성되며 OS가 실행한 프로그램의 코드를 읽어들여 프로세스에 할당된 메모리의 Text segment에 저장한다.
+  - 초기화된 전역 변수 및 static 변수를 data segment에 할당.
+  - HEAP과 Stack은 초기 메모리 주소만 초기화됨.
+  - PCB에 여러 정보가 기록되면 Ready Queue에서 CPU를 할당받기까지 대기한다.
 
 </div>
 </details>
