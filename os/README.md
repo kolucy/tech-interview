@@ -30,7 +30,7 @@
 </details>
 
 <details>
-<summary>프로세스와 쓰레드의 차이를 설명해보세요</summary>
+<summary>크롬 탭이 프로세스인지 쓰레드인지 설명해보세요</summary>
 <div markdown="1">
   
 - 크롬은 탭마다 PID를 가지고 있으니 Process이며 각 Tab마다 랜더링 정보나 기타 데이터를 따로 관리한다고 한다. 그로인해 메모리를 많이 잡아먹기도 하지만 하나의 Tab에 오류가 생겼다고 모든 Tab에 영향을 끼치진 않는다.
