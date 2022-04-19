@@ -1,0 +1,1 @@
+[3주차 OS 정리](https://ludicrous-pyjama-4c0.notion.site/3-Chapter-3-4e6e91b8277e434a9db927d650cf6079).
