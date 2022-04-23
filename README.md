@@ -1,5 +1,8 @@
 # 기술 면접 대비 스터디
 
+## 현재 진행 중인 스터디
+- 운영체제 스터디(2022.03 ~ )
+
 ## 스터디원 
 - [김보인](https://github.com/Boin-Kau)
 - [최준혁](https://github.com/junhyeok0112)
