@@ -7,7 +7,7 @@
 // 전역변수 sum(공유 자원)
 int sum = 0;
 
-int turn;
+int turn = 0;
 int flag[2];
 
 void *producer(void *param) {
