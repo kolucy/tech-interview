@@ -2,7 +2,7 @@
 
 ## Interprocess Communication(IPC)
 프로세스는 독립적으로 동작하거나 서로 협력하며 동작할 수 있다. 협력하는 프로세스들은 통신하며 서로에게 영향을 미친다.   
-IPC 모델에는 **공유 메모리(Shared memory)**와 **메시지 패싱(Message passing)**이 있다.
+IPC 모델에는 **공유 메모리(Shared memory)** 와 **메시지 패싱(Message passing)** 이 있다.
 <img src="../img/os-week3-1.png"/>
   
 
@@ -38,11 +38,11 @@ A producer produces information that is consumed by a consumer.
     - 두 프로세스가 mailbox를 공유할 때만 링크가 형성된다. 
     - 2개 이상의 프로세스 사이의 링크가 형성될 수 있다. 
   
-  - synchronous(blocking) or asynchronous(non-blocking)
-    - Blocking send: 수신자가 메시지를 받을 때까지 송신자는 block된다.
-    - Blocking receive: 메시지를 수신할 때까지 수신자는 block된다.
-    - Non-blocking send: 송신자가 메시지를 보내고 작업을 계속한다.
-    - None-blocking receive: 수신자가 유효한 메시지나 Null 메시지를 받는다.
+- synchronous(blocking) or asynchronous(non-blocking)
+  - Blocking send: 수신자가 메시지를 받을 때까지 송신자는 block된다.
+  - Blocking receive: 메시지를 수신할 때까지 수신자는 block된다.
+  - Non-blocking send: 송신자가 메시지를 보내고 작업을 계속한다.
+  - None-blocking receive: 수신자가 유효한 메시지나 Null 메시지를 받는다.
 
 
 
