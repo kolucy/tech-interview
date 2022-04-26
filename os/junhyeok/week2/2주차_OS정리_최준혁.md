@@ -1,0 +1,1 @@
+[2주차 OS 정리](https://www.notion.so/2-Chapter-3-c6ebe7d4832b4ca48791b8e1d3f0eb5d).
