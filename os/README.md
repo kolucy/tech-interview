@@ -68,4 +68,20 @@
 </div>
 </details>
 
+<details>
+<summary>동일 Process내에 있는 두개의 Threads간에 context switch가 일어날 때 어떤 정보들이 save되고 restore 될 필요가 있나요?</summary>
+<div markdown="1">
+  
+- stack 영역을 제외한 모든 메모리 영역을 공유하므로, TCB 관련 정보인 pc, registers, stack pointer만 save & restore 되면 된다. 
 
+</div>
+</details>
+
+<details>
+<summary>두 Threads가 서로 다른 processes에 속해 있을 때 context switch될 때 어떤 정보들이 save되고 restore될 필요가 있나요?</summary>
+<div markdown="1">
+  
+- process context-switching이 발생해야 하므로, PCB(Process state, Process number, pc, registers, CPU scheduling information 등)와 TCB 관련 정보 모두 save & restore 되어야 한다. 
+
+</div>
+</details>
