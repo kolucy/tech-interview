@@ -119,4 +119,7 @@ send, receive 하는 과정에서 반드시 mailbox/port를 사용한다.
 
 <br>
 
+프로세스 간 자원을 공유하면 문제가 생김 - 자원공유를 어떻게 할 것인가
+프로세스로 처리하기엔 너무 무거우니까 - 프로세스 안에서 concurrency를 지원해주는 것이 스레드(thread)
+
 Ch.3 핵심 개념 - https://parksb.github.io/article/7.html
