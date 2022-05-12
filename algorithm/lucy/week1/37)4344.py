@@ -5,7 +5,7 @@ for i in range(C):
     avg = (sum(S))/N
     cnt = 0
     for s in S:
-        if(s > avg):
+        if s > avg:
             cnt += 1
-    p = cnt/N
-    print(f'{round((100*p), 3)}%')
+    p = (cnt/N)*100
+    print(f'{p:.3f}%')
