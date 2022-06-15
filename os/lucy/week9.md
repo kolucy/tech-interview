@@ -88,14 +88,74 @@
 
 <br>
 
+# Deadlock Avoidance and Banker's Algorithm
+
 ▪ Deadlock Avoidance
-- request가 왔을 떄, 요청을 받아주기 전에, possible future deadlock을 피하기 위해 wait한다
+- 프로세스의 동작 순서를 정해서 circular wait를 만들지 않는다.
+- request가 왔을 때, 요청을 받아주기 전에, possible future deadlock을 피하기 위해 wait한다
 - 추가 정보 필요
     - resource가 어떻게 요청되는지
-- deadlocked state에 절대 들어가지 않도록 알고리즘 설계
-- safe sequence를 찾는다
+- 기본 idea: deadlocked state에 절대 들어가지 않도록 알고리즘 설계
+- 알고리즘 핵심: safe sequence를 찾는다
 - safe state
+    - not a deadlocked state
+    - 시스템이 각 스레드(최대값까지)에 리소스를 순서대로 할당할 수 있고 deadlock을 피할 수 있는 경우
+    - safe sequence(a sequence of threads)가 존재하는 경우
+- avoidance algorithm
+    - safe state의 concept으로 알고리즘 정의
+    - 시스템이 절대 deadlocked state에 진입하지 않도록 보장한다
+    - 즉, 시스템이 항상 safe state에 있도록 한다
+    - 시스템 초기 상태는 safe state, 이후 모든 request에 대해 자원을 할당할지 결정
     - single instance
-    - multiple instance
+        - Resource-Allocation Graph
+        - claim edge
+            - 앞으로 자원을 요청할 스레드
+        - cycle-detection algorithm in a directed graph
+            - no cycle -> grant. safe state
+            - cycle -> no grant. unsafe state
+    - multiple instances
+        - **Banker's Algorithm**
+            - RAG보다 비효율적이고 복잡함
+            - 스레드(프로세스)와 자원을 matrix 형태로 표현
+            - Data Structures
+                - Available: 리소스 종류별 할당 가능한 수
+                - Max: 스레드가 최대로 요청할 리소스 양
+                - Allocation: 최근 할당된 리소스 수
+                - Need: 남은(앞으로 요청할) 리소스
+            - 두 가지 알고리즘으로 합쳐져 있다
+            - Safety Algorithm
+                - ![safety_algorithm](./safety_algorithm.PNG)
+            - Resource-Request Algorithm
+                - ![resource_request_algorithm](./resource-request-algorithm.PNG)
+
+<br>
+
+# Deadlock Detection and Recovery
+
+▪ Deadlock Detection
+- prevent는 아예 쓸모없고, avoid는 너무 복잡하고 부담스럽다
+- deadlock이 발생했는지 검사하는 알고리즘. deadlock에 빠졌으면 recover한다
+- single instance
+    - wait-for graph
+        - resource-allocation graph에서 리소스를 뺀 dependency graph
+        - 그래프에서 cycle detection
+- several instances
+    - deadlock detection algorithm
+        - banker's algorithm의 data structure를 변형
+        - Available[m]
+        - Allocation[n x m]
+        - Request[n x m]: 스레드의 current request
+        - 초기화할 때 Allocation이 0일 경우, 자원을 안 갖고 있으니 deadlock 일으킬 일이 없으므로 Finish[i]=true
+        - banker's에서는 전부 Finish[i]가 true가 되어야 하지만, 이건 detection이므로 false인 스레드들이 deadlock 걸렸다고 판단
+        - ![detection_algorithm](./detection_algorithm.PNG)
 
 ▪ Deadlock Recovery
+- inform the operator
+- recover
+    - Process and Thread Termination
+        - deadlocked process들을 모두 중단(abort)한다
+        - deadlock cycle이 제거될 때까지 한 번에 한 프로세스만 중단한다
+    - Resource Preemption
+        - Selecting a victim: 비용을 최소화하는 선점 순서를 고려
+        - Rollback: 프로세스를 safe state로 롤백하고 재시작
+        - Starvation: 매번 victim에 선정되는 스레드 때문에 기아 현상이 발생할 수 있으므로 victim 선택 횟수 제한
