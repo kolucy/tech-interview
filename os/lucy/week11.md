@@ -128,3 +128,119 @@
 - 프로세스가 shared page에 `write`할 때만 해당 shared page를 copy한다
 - fork(), exec()에서 발생할 수 있는 상황
 - copy 후 page table 수정
+
+https://os.ecci.ucr.ac.cr/slides/Abraham-Silberschatz-Operating-System-Concepts-10th-2018.pdf
+
+p513
+
+<br>
+
+# Page Replacement
+
+- Demand Paging을 구현할 때 고민해야 할 점
+    1. 어떤 프로세스에 몇 개의 프레임을 할당할지(Frame-allocation algorithm)
+    2. 빈 리스트가 없을 때 어떤 프레임을 희생시킬지(`Page-replacement algorithm`)**
+- 기본적으로 secondary storage의 I/O 작업은 시간이 오래 소요되므로(expensive), demand paging 방법을 조금만 개선해도 system performance(성능)를 크게 향상시킬 수 있다
+
+<br>
+
+▪ Page Replacement
+- 페이지를 프레임에 할당해야 할 때, free frame이 없다면
+- 현재 사용되지 않고 있는 프레임을 찾아 해제(free)시킨다 -> 해당 contents를 swap space에 write해서 frame을 free시키고, page table을 변경해서 페이지가 더이상 메모리에 없음(invalid or dirty)을 나타낸다
+- freed(해제된) frame을 사용하여, 프로세스 장애가 발생했던 페이지를 보유한다(hold)
+- ![page_replacement](./page_replacement.PNG)
+
+<br>
+
+▪ Page Fault Service include Page Replacement
+1. secondary storage에서 해당 페이지의 위치를 찾는다
+2. a free frame을 찾는다
+    - free frame이 있으면, 사용한다
+    - free frame이 없으면, page-replacement algorithm을 사용해서 a victim frame을 선정한다
+    - the victim frame을 secondary storage에 write하고 (필요한 경우), page 및 frame table을 변경한다
+    - 할당할 page를 newly freed frame으로 읽어들이고, page 및 frame table을 변경한다
+    - page fault가 발생한 위치에서 프로세스를 continue한다
+
+<br>
+
+▪ Evaluation of Page Replacement Algorithms
+- PR 알고리즘의 최종 목표는 page fault를 최소화하는 것
+- frame 수가 많아질수록 page fault 역시 줄어든다 (the more frames, the less page faults)
+- reference string: a string of memory references. memory reference를 페이지 번호 단위로 나열한 것
+- reference string으로 page fault 개수를 계산해서 이를 최소화할 수 있는 알고리즘을 design한다
+
+<br>
+
+▪ FIFO Page Replacement
+- First-In-First-Out, the simplest algorithm
+- page가 교체되어야할 때 the oldest page를 victim으로 선정
+- Belady's Anomaly(벨라디의 모순)이 발생한다
+    - 일반적으로 프로세스의 가상 메모리에 대한 프레임 수를 늘리면 page fault 발생이 줄어든다
+    - 하지만 원칙에 맞지 않게 frame 수가 많아졌음에도 page fault 발생 수가 늘어나는 현상
+    - 일부의 경우 프로세스에 할당된 frame이 증가할수록 page-fault rate가 증가할 수 있다
+
+<br>
+
+▪ Optimal Page Replacement
+- optimal algorithm은 lowest page-fault rate를 가지고, Belady's anomaly를 겪지 않는 것
+- OPT or MIN
+    - 가장 오랫동안 사용하지 않을 page를 교체한다
+- OPT는 the lowest possible page-fault rate를 보장할 것이다
+- reference string에 대한 future knowledge가 필요
+- 실행되는 시점에서는 미래에 어떤 페이지가 올지 알 수 없기 때문에 실질적으로 사용할 수 없는 알고리즘. 때문에, 주로 비교 연구(comparison studies)에 사용
+
+<br>
+
+▪ Recall the Shortest-Job-First CPU scheduler
+- the key distinction(주요 차이점) between the FIFO and the OPT
+- FIFO
+    - looking backward: when a page was brought in?
+- OPT
+    - looking forward: when a page to be used?
+- recent past를 near future의 근사치(approximation)으로 사용하면 가장 오랫동안 사용되지 않은 page를 교체할 수 있다 -> LRU
+
+<br>
+
+▪ LRU Page Replacement
+- LRU: Least Recently Used (최근에 가장 사용되지 않은, 가장 최소로 사용된)
+- 가장 오랫동안 사용되지 않은 페이지를 victim으로 선정하는 알고리즘
+- 최적 알고리즘 방식과 비슷한 성능을 내기 위해 고안한 알고리즘
+- 앞으로 사용할 페이지를 '예측'하여 희생자를 선정하는 방법으로, 과거에 오랫동안 사용하지 않았다면 미래에도 많이 사용하지 않을 것이라고 예측하는 것
+- 각 페이지에 해당 페이지가 마지막으로 사용된 시간을 연결하고, 가장 오랫동안 사용되지 않은 페이지를 선택한다
+- 성능이 높아 실제 자주 사용하고, Belady's Anomaly이 발생하지 않는다
+- 하지만 LRU 알고리즘을 구현하기 위해서는 frame이 언제 마지막으로 사용되었는지에 대한 정보를 저장해야 하므로, 하드웨어의 지원이 필요하다
+    - 가능한 두 가지 구현 방법
+    - `counter` and `stack`
+- `Counter` implementation
+    - **페이지 참조가 발생할 때마다 시간을 체크하는 방법으로, 페이지 교체가 일어나야 하는 경우 가장 시간이 오래된 페이지를 victim으로 선정한다**
+    - **페이지가 참조될 때마다 counter 또는 clock을 copy하고, page를 가장 작은 값으로 바꾼다**
+    - **페이지 변경이 필요할 때 페이지 테이블에서 가장 오래된 것을 찾아야 하고, 페이지 테이블이 변경될 때마다 페이지의 시간도 함께 변경해야 하는 단점이 있다**
+    - 각 page-table 항목을 time-of-use 필드와 연관시키고 CPU에 logical clock(시간) 또는 counter를 추가한다
+        - logical clock: 분산 시스템에서 시간순 및 인과관계를 캡처하는 메커니즘
+        - cf. clock(클럭): CPU의 속도를 나타내는 단위. 클럭 속도는 프로세서가 1초에 전체 처리 주기를 완료하는 속도이다
+        - counter: 종종 클럭 신호와 관련하여 특정 이벤트나 프로세스가 발생한 횟수를 저장(때로는 표시)하는 장치. 회로에서 발생하는 특정 이벤트를 계산할 수 있다
+    - clock은 모든 메모리 참조에 대해 증가한다
+    - page가 참조될 때마다 clock register의 내용이 해당 페이지의 page-entry에 있는 time-of-use 필드에 copy된다
+    - 각 페이지에 대한 마지막 참조(last reference)의 '시간'을 갖고 있다
+    - 페이지를 가장 작은 시간 값(the smallest time value)으로 바꾼다
+- `Stack` implementation
+    - page number를 stack에 저장한다
+    - page가 참조될 때마다 entries(푸시된 항목)는 **stack 중간에서 제거되고 상단에 올라간다**
+        - `항목은 스택 중간에서 제거되어야 하므로` head pointer와 tail pointer가 있는 이중(doubly) linked list를 사용하여 접근 방식을 구현하는 것이 가장 좋다
+    - 최근 사용된 페이지는 항상 stack의 top에 있고, 가장 오래전에 사용된 페이지는 bottom에 위치하게 된다
+
+<br>
+
+▪ LRU-Approximation Page Replacement
+- 많은 컴퓨터 시스템들은 LRU page replacement를 위한 충분한 하드웨어 지원을 제공하지 않는다
+- 하지만 Reference bit(참조 비트) 형태로 약간의 도움을 준다
+- 페이지의 참조 비트는 해당 페이지가 참조될 때마다 하드웨어에 의해 설정된다
+- reference bit
+    - 초기값은 0 (by OS), 각 페이지마다 할당된다
+    - 페이지가 참조되면 1
+    - 비트 값이 0인 page 중에서 victim으로 선정, replace한다
+    - 사용 순서는 알 수 없다
+
+<br>
+
+▪ Second-Chance Algorithm
