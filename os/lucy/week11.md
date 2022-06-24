@@ -201,7 +201,7 @@ p513
 
 <br>
 
-▪ LRU Page Replacement
+**▪ LRU Page Replacement**
 - LRU: Least Recently Used (최근에 가장 사용되지 않은, 가장 최소로 사용된)
 - 가장 오랫동안 사용되지 않은 페이지를 victim으로 선정하는 알고리즘
 - 최적 알고리즘 방식과 비슷한 성능을 내기 위해 고안한 알고리즘
@@ -244,3 +244,75 @@ p513
 <br>
 
 ▪ Second-Chance Algorithm
+- **FIFO replacement algorithm 사용 + reference bit를 이용하여 second chance를 주는 방식**
+- page가 select되면 reference bit를 검사
+    - 0이면 그대로 교체 진행
+    - 1이면 page에 second chance를 주고 다음 페이지로 넘어간다
+    - 페이지가 second chance를 얻으면 reference bit가 0으로 초기화되고 도착 시간이 현재 시간으로 재설정된다
+    - 따라서 second chance가 주어진 페이지는 다른 모든 페이지가 교체될 때까지 (또는 second chane가 주어질 때까지) 교체되지 않는다
+
+<br>
+
+▪ Page Replacement Algorithm  
+1. FIFO
+2. OPT
+3. LRU
+- 실제 사용은 LRU
+- LRU의 다양한 변형들
+    - reference bit
+
+<br>
+
+▪ Allocation of Frames
+- page replacement algorithm의 목적은 "가장 효율적으로 victim을 선정하자"
+- 어떤 프로세스에게 얼마만큼의 프레임을 할당하는 것이 좋을까?
+- 프로세스가 당장 수행해야 할 부분에 대해 최소한의 프레임을 할당하는 것이 효율이 좋을 것이다
+
+▪ The strategies for frame allocation
+- Equal .vs. **Proportional**
+    - equal allocation: 동일 할당. 모든 프로세스에 동일하게 frame을 할당한다
+    - **proportional allocation**: 비례 할당. 프로세스 크기에 비례하게 frame을 할당한다
+- **Global** .vs. Local
+    - local replacement: 할당된 프레임 집합 안에서만 victim을 선택한다
+    - **global replacement**: 시스템의 모든 프레임 집합에서 replacement frame을 선택한다
+
+<br>
+
+# Thrashing
+
+▪ Thrashing
+- ![thrashing](./thrashing.PNG)
+- 프로세스의 실제 작업 수행 시간보다 page를 swapping하는 시간이 더 오래 걸리는 현상
+- 시스템이 page fault를 처리하는 데 대부분의 시간을 소비하고 실제 작업 수행은 거의 무시되는 상태
+- 멀티프로그래밍의 정도가 높아질수록, 즉 프로세스를 많이 실행할수록 프로세스에 할당되는 프레임의 수는 줄어든다
+- CPU 활용도는 감소, 시스템 처리는 과도하게 증가 -> 심각한 성능 저하
+- 해결 방법: 멀티프로그래밍의 정도를 줄인다
+- `local replacement algorithm`을 사용하여 thrashing의 영향을 제한할 수 있다
+    - locality of reference
+
+<br>
+
+▪ Working-Set Model
+- ![working_set_model](./working_set_model.PNG)
+- locality를 기반으로 한다
+- idea: 가장 최근의 page references를 검사하는 것
+- Working-set: 가장 최근의 page references의 집합. 프로세스가 일정 시간동안 원활하게 수행되기 위해 한꺼번에 메모리에 올라와 있어야 하는 페이지들의 집합
+- page가 active use(활성 상태)이면 - working set에 있다
+- page가 더이상 사용되지 않으면, page의 last reference 후 working set time units에서 삭제된다
+- 과정
+    - 프로세스의 워킹셋 전체가 메모리에 올라와 있지 않다면 실행 자체를 하지 않고 모든 프레임을 반납한 후 스스로 swap out한다
+    - 일부 프로세스가 swap out되면 나머지 프로세스의 워킹셋은 충족할 수 있을 것이고, 모두 실행할 수 있게 된다
+    - 나머지 프로세스의 실행이 모두 종료되고 swap out되었던 프로세스의 워킹셋을 충족할 수 있게 되면 그 때 프레임을 할당하고 해당 프로세스를 실행한다
+    - 프로세스의 실행 기준을 높였으므로 시스템에 올라가는 프로세스의 수는 자연스럽게 조절될 것이고, 이로써 thrashing을 방지한다
+- working-set의 크기 할당은 working-set window를 통해 결정
+- 워킹셋 윈도우의 크기를 너무 적게 지정하면 local set을 모두 수용하지 못할 수 있고, 너무 크게 지정해도 여러 local set이 모여 효율이 떨어질 수 있다
+- 적절하게 working-set window의 크기를 지정하는 것이 중요
+- working set만 올리도록 제한하면 thrashing 문제를 완화할 수 있다
+
+<br>
+
+----
+
+https://velog.io/@hoyaho/%EC%9D%B8%ED%94%84%EB%9F%B0-%EA%B3%B5%EB%A3%A1%EC%B1%85-%EC%A0%95%EB%A6%AC-Section-11-%EF%BD%9C-CS-Study
+
+https://www.geeksforgeeks.org/techniques-to-handle-thrashing/
