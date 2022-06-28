@@ -136,6 +136,7 @@
     - 행(rows): 도메인, 열(columns): 객체(objects)
     - 어떤 도메인의 어떤 object에 부여할 권한을 표시
 - 다양한 policy를 지정하는 메커니즘을 제공
+- ![access_matrix](./access_matrix.PNG)
 
 <br>
 
